@@ -18,27 +18,21 @@ public class UserUpdateServlet extends HttpServlet {
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		try {
 			 Connection users = null;
 			 try {
-			 request.setCharacterEncoding("utf-8");
-			 Class.forName("com.mysql.jdbc.Driver");
-			 users = DriverManager.getConnection("jdbc:mysql://localhost/servlet_db?useUnicode=true&characterEncoding=utf8","root","");
-			 String id = request.getParameter("updateId");
+			 users = DBConnection.openConnection();
+						 String id = request.getParameter("updateId");
 			 String name = request.getParameter("updateName");
 			 String picture = request.getParameter("updatePicture");
 			 Statement state = users.createStatement();
 			 state.executeUpdate("UPDATE user_table SET name='" + name +
 			 "' , picture='" + picture + "' WHERE id='" + id +"'");
-			 state.close();
-			 users.close();
+			 DBConnection.closeConnection(users, state);
 			 response.sendRedirect("/select");
-			 }catch(ClassNotFoundException e) {
-			 e.printStackTrace();
-			 }
 			 }catch(SQLException e){
-			 e.printStackTrace();
+				 e.printStackTrace();
+			 }
+
 			 }
 	}
 
-}
